@@ -1,0 +1,29 @@
+﻿<UserControl
+    x:Class="CurrencyConverter.Views.CurrencyConverterView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:CurrencyConverter.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:CurrencyConverter.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:CurrencyConverterViewModel}"
+    mc:Ignorable="d">
+
+    <WrapPanel Background="White">
+        <local:CurrencyEditor Margin="10,10,10,10" DataContext="{Binding CurrencyFrom}" />
+        <TextBlock
+            VerticalAlignment="Center"
+            FontSize="24"
+            FontWeight="Bold"
+            Text="=" />
+        <local:CurrencyEditor Margin="10,10,10,10" DataContext="{Binding CurrencyTo}" />
+
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Loaded">
+                <i:InvokeCommandAction Command="{Binding InitializeOnLoadCommand}" />
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+    </WrapPanel>
+
+</UserControl>
