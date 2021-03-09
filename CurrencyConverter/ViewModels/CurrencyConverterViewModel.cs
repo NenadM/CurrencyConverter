@@ -27,9 +27,9 @@ namespace CurrencyConverter.ViewModels
 
         public ICommand InitializeOnLoadCommand { get; }
 
-        public CurrencyEditorViewModel CurrencyFrom { get; set; }
+        public CurrencyEditorViewModel CurrencyFrom { get; }
 
-        public CurrencyEditorViewModel CurrencyTo { get; set; }
+        public CurrencyEditorViewModel CurrencyTo { get; }
 
         private async Task Initialize()
         {
