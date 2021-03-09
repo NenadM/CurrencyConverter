@@ -9,77 +9,41 @@ namespace CurrencyConverter.ViewModels
     public class CurrencyConverterViewModel : ViewModelBase
     {
         private readonly FrankfurterApiService frankfurterApiService;
-        private CurrencyEditorViewModel currencyFrom;
-        private CurrencyEditorViewModel currencyTo;
 
         public CurrencyConverterViewModel()
         {
             this.frankfurterApiService = new FrankfurterApiService();
             this.InitializeOnLoadCommand = new AsyncCommand(this.Initialize);
+
+            var appSettings = Settings.Default;
+
+            var convertCurrencyFromCommand = new AsyncCommand(() => this.ConvertCurrency(this.CurrencyFrom, this.CurrencyTo));
+            var convertCurrencyToCommand = new AsyncCommand(() => this.ConvertCurrency(this.CurrencyTo, this.CurrencyFrom));
+
+            this.CurrencyFrom = new CurrencyEditorViewModel("From:", appSettings.FromAmount, appSettings.FromCurrency, convertCurrencyFromCommand, convertCurrencyFromCommand);
+            this.CurrencyTo = new CurrencyEditorViewModel("To:", string.Empty, appSettings.ToCurrency, convertCurrencyToCommand, convertCurrencyFromCommand);
+
         }
 
         public ICommand InitializeOnLoadCommand { get; }
 
-        public CurrencyEditorViewModel CurrencyFrom 
-        {
-            get 
-            {
-                return this.currencyFrom;
-            }
-            set 
-            {
-                if (this.currencyFrom == value)
-                {
-                    return;
-                }
+        public CurrencyEditorViewModel CurrencyFrom { get; set; }
 
-                this.currencyFrom = value;
-                this.OnPropertyChanged(nameof(this.CurrencyFrom));
-            }
-        }
-
-        public CurrencyEditorViewModel CurrencyTo
-        {
-            get
-            {
-                return this.currencyTo;
-            }
-            set
-            {
-                if (this.currencyTo == value)
-                {
-                    return;
-                }
-
-                this.currencyTo = value;
-                this.OnPropertyChanged(nameof(this.CurrencyTo));
-            }
-        }
+        public CurrencyEditorViewModel CurrencyTo { get; set; }
 
         private async Task Initialize()
         {
-            var fromAmount = Settings.Default.FromAmount;
-            var fromCurrency = Settings.Default.FromCurrency;
-            var toCurrency = Settings.Default.ToCurrency;
-
             var currencies = await this.frankfurterApiService.GetCurrencies();
-            var convertCurrencyFromCommand = new AsyncCommand(() => this.ConvertCurrency(this.currencyFrom, this.currencyTo));
-            var convertCurrencyToCommand = new AsyncCommand(() => this.ConvertCurrency(this.currencyTo, this.currencyFrom));
-
-            this.CurrencyFrom = new CurrencyEditorViewModel("From:", fromAmount, fromCurrency, currencies, convertCurrencyFromCommand, convertCurrencyFromCommand);
-            this.CurrencyTo = new CurrencyEditorViewModel("To:", string.Empty, toCurrency, currencies, convertCurrencyToCommand, convertCurrencyFromCommand);
-
-            await convertCurrencyFromCommand.ExecuteAsync();
+            this.CurrencyFrom.Currencies = currencies;
+            this.CurrencyTo.Currencies = currencies;
+            await ((AsyncCommand)this.CurrencyFrom.ConvertOnAmountCommand).ExecuteAsync();
         }
 
         private async Task ConvertCurrency(CurrencyEditorViewModel convertCurrencyFrom, CurrencyEditorViewModel convertCurrencyTo)
         {
-            Settings.Default.FromAmount = this.currencyFrom.Amount;
-            Settings.Default.FromCurrency = this.currencyFrom.Currency;
-            Settings.Default.ToCurrency = this.currencyTo.Currency;
-            Settings.Default.Save();
+            this.SaveSettings();
 
-            if(string.IsNullOrEmpty(convertCurrencyFrom.Amount))
+            if (string.IsNullOrEmpty(convertCurrencyFrom.Amount))
             {
                 convertCurrencyTo.Amount = string.Empty;
 
@@ -100,6 +64,14 @@ namespace CurrencyConverter.ViewModels
             convertCurrencyTo.Amount = currencyConversion.Rates[currencyTo].ToString(numberFormatInfo);
             
             return;
+        }
+
+        private void SaveSettings()
+        {
+            Settings.Default.FromAmount = this.CurrencyFrom.Amount;
+            Settings.Default.FromCurrency = this.CurrencyFrom.Currency;
+            Settings.Default.ToCurrency = this.CurrencyTo.Currency;
+            Settings.Default.Save();
         }
     }
 }

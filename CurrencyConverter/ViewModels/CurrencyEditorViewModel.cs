@@ -8,11 +8,11 @@ namespace CurrencyConverter.ViewModels
     {
         private string amount;
         private string currency;
+        private IEnumerable<CurrencyDto> currencies;
 
-        public CurrencyEditorViewModel(string label, string amount, string currency, IEnumerable<CurrencyDto> currencies, ICommand convertOnAmountCommand, ICommand convertOnCurrencyCommand)
+        public CurrencyEditorViewModel(string label, string amount, string currency, ICommand convertOnAmountCommand, ICommand convertOnCurrencyCommand)
         {
             this.Label = label;
-            this.Currencies = currencies;
             this.amount = amount;
             this.currency = currency;
             this.ConvertOnAmountCommand = convertOnAmountCommand;
@@ -22,8 +22,6 @@ namespace CurrencyConverter.ViewModels
         public ICommand ConvertOnAmountCommand { get; }
 
         public ICommand ConvertOnCurrencyCommand { get; }
-
-        public IEnumerable<CurrencyDto> Currencies { get; set; }
 
         public string Label { get; }
 
@@ -60,6 +58,24 @@ namespace CurrencyConverter.ViewModels
 
                 this.currency = value;
                 this.OnPropertyChanged(nameof(this.Currency));
+            }
+        }
+
+        public IEnumerable<CurrencyDto> Currencies
+        {
+            get
+            {
+                return this.currencies;
+            }
+            set
+            {
+                if (this.currencies == value)
+                {
+                    return;
+                }
+
+                this.currencies = value;
+                this.OnPropertyChanged(nameof(this.Currencies));
             }
         }
     }
