@@ -10,7 +10,8 @@ namespace CurrencyConverter
         public Window BootstrapApplication()
         {
             var frankfurterApiService = new FrankfurterApiService();
-            var currencyConverterViewModel = new CurrencyConverterViewModel(frankfurterApiService);
+            var applicationSettingsService = new ApplicationSettingsService();
+            var currencyConverterViewModel = new CurrencyConverterViewModel(frankfurterApiService, applicationSettingsService);
             var mainWindow = new MainView { DataContext = currencyConverterViewModel };
 
             return mainWindow;

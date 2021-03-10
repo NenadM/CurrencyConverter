@@ -9,18 +9,19 @@ namespace CurrencyConverter.ViewModels
     public class CurrencyConverterViewModel : ViewModelBase
     {
         private readonly IFrankfurterApiService frankfurterApiService;
+        private readonly IApplicationSettingsService applicationSettingsService;
 
-        public CurrencyConverterViewModel(IFrankfurterApiService frankfurterApiService)
+        public CurrencyConverterViewModel(IFrankfurterApiService frankfurterApiService, IApplicationSettingsService applicationSettingsService)
         {
             this.frankfurterApiService = frankfurterApiService;
+            this.applicationSettingsService = applicationSettingsService;
             this.InitializeOnLoadCommand = new AsyncCommand(this.Initialize);
 
-            var appSettings = Settings.Default;
             var convertCurrencyFromCommand = new AsyncCommand(() => this.ConvertCurrencyAsync(this.CurrencyFrom, this.CurrencyTo));
             var convertCurrencyToCommand = new AsyncCommand(() => this.ConvertCurrencyAsync(this.CurrencyTo, this.CurrencyFrom));
 
-            this.CurrencyFrom = new CurrencyEditorViewModel(appSettings.FromAmount, appSettings.FromCurrency, convertCurrencyFromCommand, convertCurrencyFromCommand);
-            this.CurrencyTo = new CurrencyEditorViewModel(string.Empty, appSettings.ToCurrency, convertCurrencyToCommand, convertCurrencyFromCommand);
+            this.CurrencyFrom = new CurrencyEditorViewModel(this.applicationSettingsService.FromAmount, this.applicationSettingsService.FromCurrency, convertCurrencyFromCommand, convertCurrencyFromCommand);
+            this.CurrencyTo = new CurrencyEditorViewModel(string.Empty, this.applicationSettingsService.ToCurrency, convertCurrencyToCommand, convertCurrencyFromCommand);
         }
 
         public ICommand InitializeOnLoadCommand { get; }
@@ -66,10 +67,10 @@ namespace CurrencyConverter.ViewModels
 
         private void SaveSettings()
         {
-            Settings.Default.FromAmount = this.CurrencyFrom.Amount;
-            Settings.Default.FromCurrency = this.CurrencyFrom.Currency;
-            Settings.Default.ToCurrency = this.CurrencyTo.Currency;
-            Settings.Default.Save();
+            this.applicationSettingsService.FromAmount = this.CurrencyFrom.Amount;
+            this.applicationSettingsService.FromCurrency = this.CurrencyFrom.Currency;
+            this.applicationSettingsService.ToCurrency = this.CurrencyTo.Currency;
+            this.applicationSettingsService.Save();
         }
     }
 }
