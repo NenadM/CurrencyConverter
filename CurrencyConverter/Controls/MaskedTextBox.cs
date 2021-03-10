@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace CurrencyConverter
+namespace CurrencyConverter.Controls
 {
     public class MaskedTextBox : TextBox
     {
