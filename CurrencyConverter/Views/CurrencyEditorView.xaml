@@ -11,13 +11,6 @@
     mc:Ignorable="d">
 
     <StackPanel>
-        <TextBlock
-            Height="30"
-            VerticalAlignment="Center"
-            FontSize="18"
-            FontWeight="Bold"
-            Text="{Binding Label}" />
-
         <currencyconverter:MaskedTextBox
             Width="230"
             Height="100"

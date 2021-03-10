@@ -10,9 +10,8 @@ namespace CurrencyConverter.ViewModels
         private string currency;
         private IEnumerable<CurrencyDto> currencies;
 
-        public CurrencyEditorViewModel(string label, string amount, string currency, ICommand convertOnAmountCommand, ICommand convertOnCurrencyCommand)
+        public CurrencyEditorViewModel(string amount, string currency, ICommand convertOnAmountCommand, ICommand convertOnCurrencyCommand)
         {
-            this.Label = label;
             this.amount = amount;
             this.currency = currency;
             this.ConvertOnAmountCommand = convertOnAmountCommand;
@@ -22,8 +21,6 @@ namespace CurrencyConverter.ViewModels
         public ICommand ConvertOnAmountCommand { get; }
 
         public ICommand ConvertOnCurrencyCommand { get; }
-
-        public string Label { get; }
 
         public string Amount
         {

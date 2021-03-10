@@ -16,12 +16,11 @@ namespace CurrencyConverter.ViewModels
             this.InitializeOnLoadCommand = new AsyncCommand(this.Initialize);
 
             var appSettings = Settings.Default;
-
             var convertCurrencyFromCommand = new AsyncCommand(() => this.ConvertCurrencyAsync(this.CurrencyFrom, this.CurrencyTo));
             var convertCurrencyToCommand = new AsyncCommand(() => this.ConvertCurrencyAsync(this.CurrencyTo, this.CurrencyFrom));
 
-            this.CurrencyFrom = new CurrencyEditorViewModel("From:", appSettings.FromAmount, appSettings.FromCurrency, convertCurrencyFromCommand, convertCurrencyFromCommand);
-            this.CurrencyTo = new CurrencyEditorViewModel("To:", string.Empty, appSettings.ToCurrency, convertCurrencyToCommand, convertCurrencyFromCommand);
+            this.CurrencyFrom = new CurrencyEditorViewModel(appSettings.FromAmount, appSettings.FromCurrency, convertCurrencyFromCommand, convertCurrencyFromCommand);
+            this.CurrencyTo = new CurrencyEditorViewModel(string.Empty, appSettings.ToCurrency, convertCurrencyToCommand, convertCurrencyFromCommand);
         }
 
         public ICommand InitializeOnLoadCommand { get; }

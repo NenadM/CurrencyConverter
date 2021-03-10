@@ -11,13 +11,33 @@
     mc:Ignorable="d">
 
     <WrapPanel Background="White">
-        <local:CurrencyEditor Margin="10,10,10,10" DataContext="{Binding CurrencyFrom}" />
+        <StackPanel>
+            <TextBlock
+                Height="30"
+                Margin="10,0,0,0"
+                VerticalAlignment="Center"
+                FontSize="18"
+                FontWeight="Bold"
+                Text="From:" />
+            <local:CurrencyEditor Margin="10,0,10,10" DataContext="{Binding CurrencyFrom}" />
+        </StackPanel>
+
         <TextBlock
             VerticalAlignment="Center"
             FontSize="24"
             FontWeight="Bold"
             Text="=" />
-        <local:CurrencyEditor Margin="10,10,10,10" DataContext="{Binding CurrencyTo}" />
+
+        <StackPanel>
+            <TextBlock
+                Height="30"
+                Margin="10,0,0,0"
+                VerticalAlignment="Center"
+                FontSize="18"
+                FontWeight="Bold"
+                Text="To:" />
+            <local:CurrencyEditor Margin="10,0,10,10" DataContext="{Binding CurrencyTo}" />
+        </StackPanel>
 
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="Loaded">
