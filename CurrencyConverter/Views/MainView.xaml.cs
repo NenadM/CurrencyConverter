@@ -7,10 +7,9 @@ namespace CurrencyConverter.Views
     /// </summary>
     public partial class MainView : Window
     {
-        public MainView(object mainViewDataContext)
+        public MainView()
         {            
             InitializeComponent();
-            this.DataContext = mainViewDataContext;
         }
     }
 }

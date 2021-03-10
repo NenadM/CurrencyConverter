@@ -7,13 +7,13 @@ using System.Text.Json;
 
 namespace CurrencyConverter.Services
 {
-    public class FrankfurterApiService
+    public class FrankfurterApiService : IFrankfurterApiService
     {
-        public async Task<IEnumerable<CurrencyDto>> GetCurrencies()
+        public async Task<IEnumerable<CurrencyDto>> GetCurrenciesAsync()
         {
             var client = new HttpClient();
-
-            var body = await this.CallWebService("https://api.frankfurter.app/currencies");
+             
+            var body = await this.CallWebServiceAsync("https://api.frankfurter.app/currencies");
 
             var result = JsonSerializer.Deserialize<Dictionary<string, string>>(body)
                 .Select(kvp => new CurrencyDto(kvp.Key, kvp.Value));
@@ -21,16 +21,16 @@ namespace CurrencyConverter.Services
             return result;
         }
 
-        public async Task<CurrencyConversionDto> Convert(string amount, string from, string to)
+        public async Task<CurrencyConversionDto> ConvertAsync(string amount, string from, string to)
         {
             var uri = $"https://api.frankfurter.app/latest?from={from}&to={to}&amount={amount}";
-            var body = await this.CallWebService(uri);
+            var body = await this.CallWebServiceAsync(uri);
             var result = JsonSerializer.Deserialize<CurrencyConversionDto>(body);
 
             return result;
         }
 
-        private async Task<string> CallWebService(string uri)
+        private async Task<string> CallWebServiceAsync(string uri)
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage
