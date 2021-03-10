@@ -35,7 +35,7 @@
             VerticalContentAlignment="Center"
             FontSize="14"
             ItemsSource="{Binding Currencies}"
-            SelectedValue="{Binding Currency}"
+            SelectedValue="{Binding Currency, Mode=TwoWay}"
             SelectedValuePath="Symbol">
             <ComboBox.ItemTemplate>
                 <DataTemplate>

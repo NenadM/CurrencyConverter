@@ -7,7 +7,7 @@
     xmlns:viewModels="clr-namespace:CurrencyConverter.ViewModels"
     xmlns:views="clr-namespace:CurrencyConverter.Views"
     Title="Currency Converter"
-    Width="585"
+    Width="610"
     Height="300"
     ResizeMode="NoResize"
     mc:Ignorable="d">

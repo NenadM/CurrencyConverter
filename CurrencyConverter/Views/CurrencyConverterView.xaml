@@ -22,11 +22,29 @@
             <local:CurrencyEditor Margin="10,0,10,10" DataContext="{Binding CurrencyFrom}" />
         </StackPanel>
 
-        <TextBlock
+        <Button
+            Width="45"
+            Height="56"
             VerticalAlignment="Center"
-            FontSize="24"
-            FontWeight="Bold"
-            Text="=" />
+            VerticalContentAlignment="Top"
+            Background="White"
+            Command="{Binding SwitchConversionCommand}"
+            FontSize="34"
+            FontWeight="Bold">
+            &#8644;
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="18" />
+                </Style>
+            </Button.Resources>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Click">
+                    <i:CallMethodAction MethodName="SwitchConversion" TargetObject="{Binding}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+        </Button>
 
         <StackPanel>
             <TextBlock

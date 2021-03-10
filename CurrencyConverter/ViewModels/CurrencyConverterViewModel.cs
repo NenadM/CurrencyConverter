@@ -10,6 +10,7 @@ namespace CurrencyConverter.ViewModels
     {
         private readonly IFrankfurterApiService frankfurterApiService;
         private readonly IApplicationSettingsService applicationSettingsService;
+        private bool suspendConvertion = false;
 
         public CurrencyConverterViewModel(IFrankfurterApiService frankfurterApiService, IApplicationSettingsService applicationSettingsService)
         {
@@ -26,9 +27,20 @@ namespace CurrencyConverter.ViewModels
 
         public ICommand InitializeOnLoadCommand { get; }
 
+        public ICommand SwitchConversionCommand { get; }
+
         public CurrencyEditorViewModel CurrencyFrom { get; }
 
         public CurrencyEditorViewModel CurrencyTo { get; }
+
+        public void SwitchConversion()
+        {
+            this.suspendConvertion = true;
+            var tempCurrency = this.CurrencyTo.Currency;
+            this.CurrencyTo.Currency = this.CurrencyFrom.Currency;
+            this.suspendConvertion = false;
+            this.CurrencyFrom.Currency = tempCurrency;
+        }
 
         private async Task Initialize()
         {
@@ -40,6 +52,11 @@ namespace CurrencyConverter.ViewModels
 
         private async Task ConvertCurrencyAsync(CurrencyEditorViewModel convertCurrencyFrom, CurrencyEditorViewModel convertCurrencyTo)
         {
+            if (this.suspendConvertion)
+            {
+                return;
+            }
+
             this.SaveSettings();
 
             if (string.IsNullOrEmpty(convertCurrencyFrom.Amount))
