@@ -8,22 +8,21 @@ namespace CurrencyConverter.ViewModels
 {
     public class CurrencyConverterViewModel : ViewModelBase
     {
-        private readonly ICurrencyConverterApiService frankfurterApiService;
+        private readonly ICurrencyConverterApiService currencyConverterApiService;
         private readonly IApplicationSettingsService applicationSettingsService;
         private bool suspendConvertion = false;
 
-        public CurrencyConverterViewModel(ICurrencyConverterApiService frankfurterApiService, IApplicationSettingsService applicationSettingsService)
+        public CurrencyConverterViewModel(ICurrencyConverterApiService currencyConverterApiService, IApplicationSettingsService applicationSettingsService)
         {
-            this.frankfurterApiService = frankfurterApiService;
+            this.currencyConverterApiService = currencyConverterApiService;
             this.applicationSettingsService = applicationSettingsService;
             this.InitializeOnLoadCommand = new AsyncCommand(this.Initialize);
 
             var convertCurrencyFromCommand = new AsyncCommand(() => this.ConvertCurrencyAsync(this.CurrencyFrom, this.CurrencyTo));
             var convertCurrencyToCommand = new AsyncCommand(() => this.ConvertCurrencyAsync(this.CurrencyTo, this.CurrencyFrom));
 
-            var applicationSettings = this.applicationSettingsService.Load();
-            this.CurrencyFrom = new CurrencyEditorViewModel(applicationSettings.FromAmount, applicationSettings.FromCurrency, convertCurrencyFromCommand, convertCurrencyFromCommand);
-            this.CurrencyTo = new CurrencyEditorViewModel(string.Empty, applicationSettings.ToCurrency, convertCurrencyToCommand, convertCurrencyFromCommand);
+            this.CurrencyFrom = new CurrencyEditorViewModel(convertCurrencyFromCommand, convertCurrencyFromCommand);
+            this.CurrencyTo = new CurrencyEditorViewModel(convertCurrencyToCommand, convertCurrencyFromCommand);
         }
 
         public ICommand InitializeOnLoadCommand { get; }
@@ -45,7 +44,13 @@ namespace CurrencyConverter.ViewModels
 
         private async Task Initialize()
         {
-            var currencies = await this.frankfurterApiService.GetCurrenciesAsync();
+            var applicationSettings = this.applicationSettingsService.Load();
+            
+            this.CurrencyFrom.Amount = applicationSettings.FromAmount;
+            this.CurrencyFrom.Currency = applicationSettings.FromCurrency;
+            this.CurrencyTo.Currency= applicationSettings.ToCurrency;
+
+            var currencies = await this.currencyConverterApiService.GetCurrenciesAsync();
             this.CurrencyFrom.Currencies = currencies;
             this.CurrencyTo.Currencies = currencies;
             await ((AsyncCommand)this.CurrencyFrom.ConvertOnAmountCommand).ExecuteAsync();
@@ -75,7 +80,7 @@ namespace CurrencyConverter.ViewModels
             }
 
             var currencyTo = convertCurrencyTo.Currency;
-            var currencyConversion = await this.frankfurterApiService.ConvertAsync(convertCurrencyFrom.Amount, convertCurrencyFrom.Currency, currencyTo);
+            var currencyConversion = await this.currencyConverterApiService.ConvertAsync(convertCurrencyFrom.Amount, convertCurrencyFrom.Currency, currencyTo);
 
             var numberFormatInfo = new NumberFormatInfo { NumberDecimalSeparator = "." };
             convertCurrencyTo.Amount = currencyConversion.Rates[currencyTo].ToString(numberFormatInfo);
