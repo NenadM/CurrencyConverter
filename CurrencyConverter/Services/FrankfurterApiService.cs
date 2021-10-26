@@ -6,9 +6,9 @@ using System.Net.Http.Json;
 
 namespace CurrencyConverter.Services
 {
-    public class FrankfurterApiService : IFrankfurterApiService
+    public class FrankfurterApiService : ICurrencyConverterApiService
     {
-        private readonly HttpClient httpClient = new HttpClient();
+        private readonly HttpClient httpClient = new();
 
         public async Task<IEnumerable<CurrencyDto>> GetCurrenciesAsync()
         {

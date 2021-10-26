@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace CurrencyConverter.Services
 {
-    public interface IFrankfurterApiService
+    public interface ICurrencyConverterApiService
     {
         Task<IEnumerable<CurrencyDto>> GetCurrenciesAsync();
 

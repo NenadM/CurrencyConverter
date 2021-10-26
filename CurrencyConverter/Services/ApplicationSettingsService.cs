@@ -2,24 +2,21 @@
 {
     public class ApplicationSettingsService : IApplicationSettingsService
     {
-        public ApplicationSettingsService()
+        public ApplicationSettings Load()
         {
-            this.FromAmount = Settings.Default.FromAmount;
-            this.FromCurrency = Settings.Default.FromCurrency;
-            this.ToCurrency = Settings.Default.ToCurrency;
+            var applicationSettings = new ApplicationSettings(
+                Settings.Default.FromAmount,
+                Settings.Default.FromCurrency,
+                Settings.Default.ToCurrency);
+
+            return applicationSettings;
         }
 
-        public string FromAmount { get; set; }
-
-        public string FromCurrency { get; set; }
-
-        public string ToCurrency { get; set; }
-
-        public void Save()
+        public void Save(ApplicationSettings applicationSettings)
         {
-            Settings.Default.FromAmount = this.FromAmount;
-            Settings.Default.FromCurrency = this.FromCurrency;
-            Settings.Default.ToCurrency = this.ToCurrency;
+            Settings.Default.FromAmount = applicationSettings.FromAmount;
+            Settings.Default.FromCurrency = applicationSettings.FromCurrency;
+            Settings.Default.ToCurrency = applicationSettings.ToCurrency;
             Settings.Default.Save();
         }
     }

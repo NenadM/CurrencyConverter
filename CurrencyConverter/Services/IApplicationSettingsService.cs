@@ -2,12 +2,8 @@
 {
     public interface IApplicationSettingsService
     {
-        string FromAmount { get; set; }
+        ApplicationSettings Load();
 
-        string FromCurrency { get; set; }
-
-        string ToCurrency { get; set; }
-
-        void Save();
+        void Save(ApplicationSettings applicationSettings);
     }
 }

@@ -9,9 +9,7 @@ namespace CurrencyConverter
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            var bootstrapper = new Bootstrapper();
-            var mainWindow = bootstrapper.BootstrapApplication();
-            mainWindow.Show();
+            new Bootstrapper().BootstrapApplication().Show();
 
             base.OnStartup(e);
         }

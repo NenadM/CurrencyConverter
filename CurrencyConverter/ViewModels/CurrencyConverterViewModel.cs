@@ -8,11 +8,11 @@ namespace CurrencyConverter.ViewModels
 {
     public class CurrencyConverterViewModel : ViewModelBase
     {
-        private readonly IFrankfurterApiService frankfurterApiService;
+        private readonly ICurrencyConverterApiService frankfurterApiService;
         private readonly IApplicationSettingsService applicationSettingsService;
         private bool suspendConvertion = false;
 
-        public CurrencyConverterViewModel(IFrankfurterApiService frankfurterApiService, IApplicationSettingsService applicationSettingsService)
+        public CurrencyConverterViewModel(ICurrencyConverterApiService frankfurterApiService, IApplicationSettingsService applicationSettingsService)
         {
             this.frankfurterApiService = frankfurterApiService;
             this.applicationSettingsService = applicationSettingsService;
@@ -21,8 +21,9 @@ namespace CurrencyConverter.ViewModels
             var convertCurrencyFromCommand = new AsyncCommand(() => this.ConvertCurrencyAsync(this.CurrencyFrom, this.CurrencyTo));
             var convertCurrencyToCommand = new AsyncCommand(() => this.ConvertCurrencyAsync(this.CurrencyTo, this.CurrencyFrom));
 
-            this.CurrencyFrom = new CurrencyEditorViewModel(this.applicationSettingsService.FromAmount, this.applicationSettingsService.FromCurrency, convertCurrencyFromCommand, convertCurrencyFromCommand);
-            this.CurrencyTo = new CurrencyEditorViewModel(string.Empty, this.applicationSettingsService.ToCurrency, convertCurrencyToCommand, convertCurrencyFromCommand);
+            var applicationSettings = this.applicationSettingsService.Load();
+            this.CurrencyFrom = new CurrencyEditorViewModel(applicationSettings.FromAmount, applicationSettings.FromCurrency, convertCurrencyFromCommand, convertCurrencyFromCommand);
+            this.CurrencyTo = new CurrencyEditorViewModel(string.Empty, applicationSettings.ToCurrency, convertCurrencyToCommand, convertCurrencyFromCommand);
         }
 
         public ICommand InitializeOnLoadCommand { get; }
@@ -84,10 +85,9 @@ namespace CurrencyConverter.ViewModels
 
         private void SaveSettings()
         {
-            this.applicationSettingsService.FromAmount = this.CurrencyFrom.Amount;
-            this.applicationSettingsService.FromCurrency = this.CurrencyFrom.Currency;
-            this.applicationSettingsService.ToCurrency = this.CurrencyTo.Currency;
-            this.applicationSettingsService.Save();
+            ApplicationSettings applicationSettings = new(this.CurrencyFrom.Amount, this.CurrencyFrom.Currency, this.CurrencyTo.Currency);
+            
+            this.applicationSettingsService.Save(applicationSettings);
         }
     }
 }
